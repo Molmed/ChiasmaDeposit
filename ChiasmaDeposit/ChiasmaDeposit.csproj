@@ -1,0 +1,228 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7F34F04C-24A8-48F9-B897-8C2A94F8326F}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ChiasmaDeposit</RootNamespace>
+    <AssemblyName>ChiasmaDeposit</AssemblyName>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <ApplicationIcon>ApplicationIcon.ico</ApplicationIcon>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>
+    </DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BarCodeController.cs" />
+    <Compile Include="Config.cs" />
+    <Compile Include="Data\BarCodeManager.cs" />
+    <Compile Include="Data\ChiasmaDepBase.cs" />
+    <Compile Include="Data\ChiasmaDepData.cs" />
+    <Compile Include="Database\Constants.cs" />
+    <Compile Include="Data\Container.cs" />
+    <Compile Include="Data\ContainerManager.cs" />
+    <Compile Include="Data\TubeRack.cs" />
+    <Compile Include="Data\TubeRackForTags.cs" />
+    <Compile Include="Data\TubeRackManager.cs" />
+    <Compile Include="Data\TubeRackType.cs" />
+    <Compile Include="IO\FileServer.cs" />
+    <Compile Include="IO\LabelPrinter.cs" />
+    <Compile Include="Data\LoadSampleStoreageDuos.cs" />
+    <Compile Include="DoubletsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DoubletsDialog.Designer.cs">
+      <DependentUpon>DoubletsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Exception\BarCodeException.cs" />
+    <Compile Include="Exception\DataArgumentEmptyException.cs" />
+    <Compile Include="Exception\DataArgumentException.cs" />
+    <Compile Include="Exception\DataArgumentLengthException.cs" />
+    <Compile Include="Exception\DataArgumentNullException.cs" />
+    <Compile Include="Data\DataBarCode.cs" />
+    <Compile Include="Data\DataComment.cs" />
+    <Compile Include="Exception\DataException.cs" />
+    <Compile Include="Data\DataIdentifier.cs" />
+    <Compile Include="Data\DataIdentity.cs" />
+    <Compile Include="Database\DataReader.cs" />
+    <Compile Include="Database\Dataserver.cs" />
+    <Compile Include="Data\GenericContainer.cs" />
+    <Compile Include="Data\GenericContainerManager.cs" />
+    <Compile Include="IO\ZPLGenerator.cs" />
+    <Compile Include="LoadSampleStorageDuoDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LoadSampleStorageDuoDialog.Designer.cs">
+      <DependentUpon>LoadSampleStorageDuoDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LoginDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LoginDialog.Designer.cs">
+      <DependentUpon>LoginDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LoginWithBarCodeDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LoginWithBarCodeDialog.Designer.cs">
+      <DependentUpon>LoginWithBarCodeDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PrintBarCodeDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PrintBarCodeDialog.Designer.cs">
+      <DependentUpon>PrintBarCodeDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="DoubletsDialog.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>DoubletsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LoadSampleStorageDuoDialog.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>LoadSampleStorageDuoDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LoginDialog.resx">
+      <DependentUpon>LoginDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintBarCodeDialog.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>PrintBarCodeDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SampleListDialog.resx">
+      <DependentUpon>SampleListDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="app.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Database\SqlCommandBuilder.cs" />
+    <Compile Include="Data\User.cs" />
+    <Compile Include="Data\UserManager.cs" />
+    <Compile Include="SampleListDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SampleListDialog.Designer.cs">
+      <DependentUpon>SampleListDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ShowErrorDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ShowErrorDialog.Designer.cs">
+      <DependentUpon>ShowErrorDialog.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ApplicationIcon.ico" />
+    <None Include="Resources\ApplicationIcon.ico" />
+    <None Include="Resources\ChiasmaIcon.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

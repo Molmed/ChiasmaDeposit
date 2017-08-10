@@ -1,0 +1,16 @@
+ChiasmaDeposit version history
+
+1.0.4629.26766			To test 3/9 2012
+				Inlogg				The default inlogg is by lab-mode.
+
+				Reading barcodes		A new window is shown after user have scanned a deposit or a sample container, to enable multiple sample containers
+								to be scanned and associated to a single deposit.
+
+1.0.5014.12566			23/9 2013			
+				Inlogg				The login is accomplished by the user scanning his barcode, as in LAB mode for Order and Chiasma. 
+
+1.0.5050.23210			29/10 2013
+				Settings			The connection is set up against the new server, mm-wchs001
+				
+1.0.5452.19439			5/12 2014
+				Base functionality		Bugfix, moving containers works again after the db-procedure p_GetGenericContainers has been altered.

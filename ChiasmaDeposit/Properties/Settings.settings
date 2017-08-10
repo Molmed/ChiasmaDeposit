@@ -1,0 +1,54 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="ChiasmaDeposit.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="DatabaseCommandTimeout" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">3600</Value>
+    </Setting>
+    <Setting Name="DataServerInitialCatalog" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">GTDB2</Value>
+    </Setting>
+    <Setting Name="DataServerAddress" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">130.238.178.226</Value>
+    </Setting>
+    <Setting Name="BarCodeLengthInternal" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">8</Value>
+    </Setting>
+    <Setting Name="BarCodeMaxTimeToRead" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="ApplicationMode" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">LAB</Value>
+    </Setting>
+    <Setting Name="AutomaticLogoutTimeLimit" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">1200</Value>
+    </Setting>
+    <Setting Name="DialogTitleStandard" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">ChiasmaDeposit</Value>
+    </Setting>
+    <Setting Name="LabelPrintServer" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">ZBR2205630</Value>
+    </Setting>
+    <Setting Name="PlateLabelFontName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">B</Value>
+    </Setting>
+    <Setting Name="PlateLabelTextBlockWidthPoints" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">850</Value>
+    </Setting>
+    <Setting Name="PlateLabelTextCharsPerLine" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">28</Value>
+    </Setting>
+    <Setting Name="PlateLabelTextLineSpacePoints" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">20</Value>
+    </Setting>
+    <Setting Name="PlateLabelTextMaxLines" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">4</Value>
+    </Setting>
+    <Setting Name="PlateLabelFontMagnFactor" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">4</Value>
+    </Setting>
+    <Setting Name="PlateLabelBarCodeYSpacingPoints" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">5</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
