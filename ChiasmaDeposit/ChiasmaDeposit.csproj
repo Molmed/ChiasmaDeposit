@@ -187,6 +187,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ApplicationIcon.ico" />
+    <Content Include="Resources\DevelBackground.PNG" />
+    <Content Include="Resources\ValidationBackground.PNG" />
     <None Include="Resources\ApplicationIcon.ico" />
     <None Include="Resources\ChiasmaIcon.bmp" />
   </ItemGroup>

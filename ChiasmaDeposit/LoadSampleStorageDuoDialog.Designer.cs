@@ -49,15 +49,16 @@ namespace Molmed.ChiasmaDep.Dialog
             this.MySaveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.MyPrintDialog = new System.Windows.Forms.PrintDialog();
             this.label4 = new System.Windows.Forms.Label();
+            this.ValidationReminderPanel = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.ActivityTimer)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // SampleStorageListView
             // 
-            this.SampleStorageListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.SampleStorageListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.SampleStorageListView.CheckBoxes = true;
             this.SampleStorageListView.FullRowSelect = true;
             this.SampleStorageListView.GridLines = true;
@@ -103,8 +104,8 @@ namespace Molmed.ChiasmaDep.Dialog
             // 
             // IdentificationTextBox
             // 
-            this.IdentificationTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.IdentificationTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.IdentificationTextBox.Location = new System.Drawing.Point(85, 102);
             this.IdentificationTextBox.Name = "IdentificationTextBox";
             this.IdentificationTextBox.ReadOnly = true;
@@ -123,7 +124,7 @@ namespace Molmed.ChiasmaDep.Dialog
             // ActivityTimer
             // 
             this.ActivityTimer.Enabled = true;
-            this.ActivityTimer.Interval = 1000;
+            this.ActivityTimer.Interval = 1000D;
             this.ActivityTimer.SynchronizingObject = this;
             this.ActivityTimer.Elapsed += new System.Timers.ElapsedEventHandler(this.ActivityTimer_Elapsed);
             // 
@@ -163,19 +164,19 @@ namespace Molmed.ChiasmaDep.Dialog
             // 
             // exportToolStripMenuItem
             // 
+            this.exportToolStripMenuItem.Enabled = false;
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
             this.exportToolStripMenuItem.Size = new System.Drawing.Size(246, 22);
             this.exportToolStripMenuItem.Text = "Export list";
             this.exportToolStripMenuItem.Click += new System.EventHandler(this.exportToolStripMenuItem_Click);
-            this.exportToolStripMenuItem.Enabled = false;
             // 
             // printToolStripMenuItem
             // 
+            this.printToolStripMenuItem.Enabled = false;
             this.printToolStripMenuItem.Name = "printToolStripMenuItem";
             this.printToolStripMenuItem.Size = new System.Drawing.Size(246, 22);
             this.printToolStripMenuItem.Text = "Print list";
             this.printToolStripMenuItem.Click += new System.EventHandler(this.printToolStripMenuItem_Click);
-            this.printToolStripMenuItem.Enabled = false;
             // 
             // printBarcodeForUncontainedToolStripMenuItem
             // 
@@ -228,12 +229,21 @@ namespace Molmed.ChiasmaDep.Dialog
             this.label4.TabIndex = 11;
             this.label4.Text = "Ready to scan samples or container ...";
             // 
+            // ValidationReminderPanel
+            // 
+            this.ValidationReminderPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.ValidationReminderPanel.Location = new System.Drawing.Point(458, 27);
+            this.ValidationReminderPanel.Name = "ValidationReminderPanel";
+            this.ValidationReminderPanel.Size = new System.Drawing.Size(147, 69);
+            this.ValidationReminderPanel.TabIndex = 12;
+            // 
             // LoadSampleStorageDuoDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.ExitButton;
             this.ClientSize = new System.Drawing.Size(617, 544);
+            this.Controls.Add(this.ValidationReminderPanel);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.ResetButton);
             this.Controls.Add(this.label3);
@@ -277,6 +287,7 @@ namespace Molmed.ChiasmaDep.Dialog
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem manualToolStripMenuItem;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Panel ValidationReminderPanel;
     }
 }
 

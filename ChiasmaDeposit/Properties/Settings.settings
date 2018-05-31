@@ -5,8 +5,8 @@
     <Setting Name="DatabaseCommandTimeout" Type="System.Int32" Scope="Application">
       <Value Profile="(Default)">3600</Value>
     </Setting>
-    <Setting Name="DataServerInitialCatalog" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">GTDB2</Value>
+    <Setting Name="DatabaseName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">GTDB2_practice</Value>
     </Setting>
     <Setting Name="DataServerAddress" Type="System.String" Scope="Application">
       <Value Profile="(Default)">130.238.178.226</Value>
@@ -49,6 +49,9 @@
     </Setting>
     <Setting Name="PlateLabelBarCodeYSpacingPoints" Type="System.Int32" Scope="Application">
       <Value Profile="(Default)">5</Value>
+    </Setting>
+    <Setting Name="EnforceAppVersion" Type="System.Boolean" Scope="Application">
+      <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>
 </SettingsFile>

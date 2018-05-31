@@ -34,10 +34,10 @@ namespace ChiasmaDeposit.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("GTDB2")]
-        public string DataServerInitialCatalog {
+        [global::System.Configuration.DefaultSettingValueAttribute("GTDB2_practice")]
+        public string DatabaseName {
             get {
-                return ((string)(this["DataServerInitialCatalog"]));
+                return ((string)(this["DatabaseName"]));
             }
         }
         
@@ -164,6 +164,15 @@ namespace ChiasmaDeposit.Properties {
         public int PlateLabelBarCodeYSpacingPoints {
             get {
                 return ((int)(this["PlateLabelBarCodeYSpacingPoints"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool EnforceAppVersion {
+            get {
+                return ((bool)(this["EnforceAppVersion"]));
             }
         }
     }
