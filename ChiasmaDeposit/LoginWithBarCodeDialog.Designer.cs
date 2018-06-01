@@ -71,7 +71,7 @@
             // 
             // BarcodeTextBox
             // 
-            this.BarcodeTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.BarcodeTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.BarcodeTextBox.Location = new System.Drawing.Point(15, 114);
             this.BarcodeTextBox.Name = "BarcodeTextBox";
@@ -112,8 +112,9 @@
             this.Controls.Add(this.MyCancelButton);
             this.Controls.Add(this.MyOkButton);
             this.Controls.Add(this.label1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "LoginWithBarcodeDialog";
-            this.Text = "Login OrderMan";
+            this.Text = "Login ChiasmaDeposit";
             this.ResumeLayout(false);
             this.PerformLayout();
 
