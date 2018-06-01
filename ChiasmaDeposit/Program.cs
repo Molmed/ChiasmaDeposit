@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using ChiasmaDeposit.Properties;
 using Molmed.ChiasmaDep.Dialog;
 
 namespace Molmed.ChiasmaDep
 {
     static class Program
     {
-        private const Boolean MyVersionControl = false;
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -22,7 +22,7 @@ namespace Molmed.ChiasmaDep
 
                 // Init main.
                 mainForm = new LoadSampleStorageDuoDialog(false);
-                if (mainForm.Login(MyVersionControl))
+                if (mainForm.Login(Settings.Default.EnforceAppVersion))
                 {
                     Application.Run(new LoadSampleStorageDuoDialog(true));
                 }

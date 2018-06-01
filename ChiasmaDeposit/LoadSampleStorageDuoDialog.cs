@@ -11,6 +11,7 @@ using System.Timers;
 using System.IO;
 using System.Drawing.Printing;
 using System.Diagnostics;
+using ChiasmaDeposit.Properties;
 using Molmed.ChiasmaDep;
 using Molmed.ChiasmaDep.Data;
 using Molmed.ChiasmaDep.Data.Exception;
@@ -223,6 +224,17 @@ namespace Molmed.ChiasmaDep.Dialog
             MyBarcodeEventhandler = new BarCodeEventHandler(BarCodeReceived);
             MyBarCodeController.BarCodeReceived += MyBarcodeEventhandler;
             IdentificationTextBox.Text = UserManager.GetCurrentUser().GetName();
+            if (Settings.Default.DatabaseName.ToLower().Contains("practice"))
+            {
+                Text += $" ({Settings.Default.DatabaseName})";
+                ValidationReminderPanel.BackgroundImage = Resources.ValidationBackground;
+            }
+            else if (Settings.Default.DatabaseName.ToLower().Contains("devel"))
+            {
+                Text += $" ({Settings.Default.DatabaseName})";
+                ValidationReminderPanel.BackgroundImage = Resources.DevelBackground;
+            }
+
         }
 
         private void InitListView()
