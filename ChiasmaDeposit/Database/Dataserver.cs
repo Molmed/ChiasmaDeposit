@@ -23,7 +23,7 @@ namespace Molmed.ChiasmaDep.Database
         public event TransactionRollbackedEventHandler TransactionRollbacked;
 
         public Dataserver(String userName, String password)
-            : this(userName, password, Settings.Default.DataServerInitialCatalog)
+            : this(userName, password, Settings.Default.DatabaseName)
         {
         }
 
