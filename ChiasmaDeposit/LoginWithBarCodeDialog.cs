@@ -12,6 +12,8 @@ namespace Molmed.ChiasmaDep.Dialog
 {
     public partial class LoginWithBarcodeDialog : Form
     {
+        private delegate void BarcodeReceivedCallback(string barcode);
+
         private string MyBarcode;
         private int MyShrinkDistance;
 
@@ -59,9 +61,18 @@ namespace Molmed.ChiasmaDep.Dialog
 
         private void BarCodeReceived(string barcode)
         {
-            MyBarcode = barcode;
-            DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.Close();
+            if (InvokeRequired)
+            {
+                BarcodeReceivedCallback c = BarCodeReceived;
+                Invoke(c, barcode);
+            }
+            else
+            {
+                MyBarcode = barcode;
+                DialogResult = DialogResult.OK;
+                Close();
+            }
+
         }
 
         public string Barcode
