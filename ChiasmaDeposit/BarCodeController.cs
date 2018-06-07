@@ -1,44 +1,53 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 using System.Windows.Forms;
+using ChiasmaDeposit.Properties;
+using Molmed.ChiasmaDep;
 
 namespace Molmed.ChiasmaDep.Data
 {
     public delegate void BarCodeEventHandler(String barCode);
 
-    class BarCodeController : ChiasmaDepBase
+    public class BarCodeController : ChiasmaDepBase
     {
-        private String MyBarCodeString;
-        private Boolean MyBarCodeFlag;
-        private DateTime MyBarCodeReadTime;
-        private Form MyForm;
+        private String _barCodeString;
+        private Boolean _barCodeFlag;
+        private DateTime _barCodeReadTime;
+        private readonly System.Timers.Timer _activityTimer;
 
         public event BarCodeEventHandler BarCodeReceived;
 
         public BarCodeController(Form form)
-            : base()
         {
-            MyForm = form;
-            MyBarCodeFlag = false;
-            MyBarCodeString = null;
-            MyForm.KeyPreview = true;
-            MyForm.KeyDown += new KeyEventHandler(Form_KeyDown);
+            _barCodeFlag = false;
+            _barCodeString = null;
+            form.KeyPreview = true;
+            form.KeyDown += Form_KeyDown;
+            QuitAtInternalBarcodeLength = true;
+            _activityTimer = new System.Timers.Timer {Interval = 200};
+            _activityTimer.Elapsed += ActivityTimer_Elapsed;
+            _activityTimer.Enabled = false;
+
+        }
+
+        private bool QuitAtInternalBarcodeLength { get; }
+
+        private void ActivityTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            BarCodeReceived?.Invoke(_barCodeString);
         }
 
         private void Form_KeyDown(object sender, KeyEventArgs e)
         {
-            TimeSpan elapsedTime;
-
-            if (MyBarCodeFlag)
+            if (_barCodeFlag)
             {
                 // Check how long it was since the bar code reading began.
-                elapsedTime = DateTime.Now.Subtract(MyBarCodeReadTime);
+                var elapsedTime = DateTime.Now.Subtract(_barCodeReadTime);
                 // If it was more than two secondes ago, it is probably a manual input
                 // and should not be regarded as a bar code reading.
-                if (elapsedTime.Seconds > BarCodeManager.GetMaxTimeToRead())
+
+                if (elapsedTime.Seconds > Settings.Default.BarCodeMaxTimeToRead)
                 {
-                    MyBarCodeFlag = false;
+                    _barCodeFlag = false;
                 }
             }
 
@@ -54,30 +63,29 @@ namespace Molmed.ChiasmaDep.Data
                 case Keys.D7:
                 case Keys.D8:
                 case Keys.D9:
-                    if (!MyBarCodeFlag)
+                    if (!_barCodeFlag)
                     {
                         // Start saving digits.
-                        MyBarCodeFlag = true;
-                        MyBarCodeReadTime = DateTime.Now;
-                        MyBarCodeString = "";
+                        _barCodeFlag = true;
+                        _barCodeReadTime = DateTime.Now;
+                        _barCodeString = "";
                     }
                     // Add digit.
-                    MyBarCodeString += e.KeyCode.ToString().Substring(1);
+                    _barCodeString += e.KeyCode.ToString().Substring(1);
+
+                    if (QuitAtInternalBarcodeLength &&
+                        _barCodeString.Length == Settings.Default.BarCodeLengthInternal &&
+                        IsNotNull(BarCodeReceived))
+                    {
+                        // Make a break to read the last termination character (if any) before barcode-received event
+                        //BarCodeReceived(MyBarCodeString);
+                        _activityTimer.Enabled = true;
+                    }
+
                     break;
 
-                case Keys.Enter:
-                    if (MyBarCodeFlag)
-                    {
-                        // Fire bar code received event.
-                        if (IsNotNull(BarCodeReceived))
-                        {
-                            BarCodeReceived(MyBarCodeString);
-                        }
-                    }
-                    MyBarCodeFlag = false;
-                    break;
                 default:
-                    MyBarCodeFlag = false;
+                    _barCodeFlag = false;
                     break;
             }
         }
