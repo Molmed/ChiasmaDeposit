@@ -16,6 +16,7 @@ using Molmed.ChiasmaDep;
 using Molmed.ChiasmaDep.Data;
 using Molmed.ChiasmaDep.Data.Exception;
 using Molmed.ChiasmaDep.Database;
+using BarCodeEventHandler = Molmed.ChiasmaDep.Data.BarCodeEventHandler;
 
 namespace Molmed.ChiasmaDep.Dialog 
 {
