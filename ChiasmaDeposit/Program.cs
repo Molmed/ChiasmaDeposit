@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using ChiasmaDeposit.Properties;
-using Molmed.ChiasmaDep.Dialog;
+using ChiasmaDeposit.UI.LoadSampleStorageDialogs;
 
 namespace Molmed.ChiasmaDep
 {

@@ -1,4 +1,4 @@
-namespace Molmed.ChiasmaDep.Dialog
+namespace ChiasmaDeposit.UI
 {
     partial class LoginDialog
     {

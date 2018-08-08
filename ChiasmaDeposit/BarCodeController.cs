@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
 using ChiasmaDeposit.Properties;
-using Molmed.ChiasmaDep;
 
 namespace Molmed.ChiasmaDep.Data
 {
@@ -10,7 +9,7 @@ namespace Molmed.ChiasmaDep.Data
     public class BarCodeController : ChiasmaDepBase
     {
         private String _barCodeString;
-        private Boolean _barCodeFlag;
+        private Boolean _ongoingBarcodeReading;
         private DateTime _barCodeReadTime;
         private readonly System.Timers.Timer _activityTimer;
 
@@ -18,7 +17,7 @@ namespace Molmed.ChiasmaDep.Data
 
         public BarCodeController(Form form)
         {
-            _barCodeFlag = false;
+            _ongoingBarcodeReading = false;
             _barCodeString = null;
             form.KeyPreview = true;
             form.KeyDown += Form_KeyDown;
@@ -33,12 +32,13 @@ namespace Molmed.ChiasmaDep.Data
 
         private void ActivityTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
+            _activityTimer.Enabled = false;
             BarCodeReceived?.Invoke(_barCodeString);
         }
 
         private void Form_KeyDown(object sender, KeyEventArgs e)
         {
-            if (_barCodeFlag)
+            if (_ongoingBarcodeReading)
             {
                 // Check how long it was since the bar code reading began.
                 var elapsedTime = DateTime.Now.Subtract(_barCodeReadTime);
@@ -47,7 +47,7 @@ namespace Molmed.ChiasmaDep.Data
 
                 if (elapsedTime.Seconds > Settings.Default.BarCodeMaxTimeToRead)
                 {
-                    _barCodeFlag = false;
+                    _ongoingBarcodeReading = false;
                 }
             }
 
@@ -63,10 +63,10 @@ namespace Molmed.ChiasmaDep.Data
                 case Keys.D7:
                 case Keys.D8:
                 case Keys.D9:
-                    if (!_barCodeFlag)
+                    if (!_ongoingBarcodeReading)
                     {
                         // Start saving digits.
-                        _barCodeFlag = true;
+                        _ongoingBarcodeReading = true;
                         _barCodeReadTime = DateTime.Now;
                         _barCodeString = "";
                     }
@@ -85,7 +85,7 @@ namespace Molmed.ChiasmaDep.Data
                     break;
 
                 default:
-                    _barCodeFlag = false;
+                    _ongoingBarcodeReading = false;
                     break;
             }
         }
