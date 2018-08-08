@@ -155,8 +155,6 @@ namespace Molmed.ChiasmaDep.Dialog
                 this.printToolStripMenuItem.Enabled = true;
                 this.exportToolStripMenuItem.Enabled = true;
             }
-            MyBarCodeController = new BarCodeController(this);
-            MyBarCodeController.BarCodeReceived += MyBarcodeEventhandler;
         }
 
         private bool CheckContainerType(IGenericContainer genericContainer)

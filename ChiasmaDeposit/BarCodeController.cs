@@ -33,6 +33,7 @@ namespace Molmed.ChiasmaDep.Data
 
         private void ActivityTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
+            _activityTimer.Enabled = false;
             BarCodeReceived?.Invoke(_barCodeString);
         }
 
