@@ -14,7 +14,6 @@ using ChiasmaDeposit.UI.SampleListDialogs;
 using Molmed.ChiasmaDep;
 using Molmed.ChiasmaDep.Data;
 using Molmed.ChiasmaDep.Data.Exception;
-using Molmed.ChiasmaDep.Dialog;
 using BarCodeEventHandler = Molmed.ChiasmaDep.Data.BarCodeEventHandler;
 
 namespace ChiasmaDeposit.UI.LoadSampleStorageDialogs 

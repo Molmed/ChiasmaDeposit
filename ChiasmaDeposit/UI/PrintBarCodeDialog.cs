@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Windows.Forms;
 using Molmed.ChiasmaDep;
 using Molmed.ChiasmaDep.Data;
-using Molmed.ChiasmaDep.Dialog;
 using Molmed.ChiasmaDep.IO;
 
 namespace ChiasmaDeposit.UI
