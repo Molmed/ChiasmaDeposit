@@ -1,20 +1,23 @@
 using System;
-using System.Collections.Generic;
 using System.Collections;
-using System.Drawing;
-using System.Text;
-using System.Reflection;
-using System.Windows.Forms;
-using System.Timers;
-using System.IO;
-using System.Drawing.Printing;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Printing;
+using System.IO;
+using System.Reflection;
+using System.Text;
+using System.Timers;
+using System.Windows.Forms;
 using ChiasmaDeposit.Properties;
+using ChiasmaDeposit.UI.SampleListDialogs;
+using Molmed.ChiasmaDep;
 using Molmed.ChiasmaDep.Data;
 using Molmed.ChiasmaDep.Data.Exception;
+using Molmed.ChiasmaDep.Dialog;
 using BarCodeEventHandler = Molmed.ChiasmaDep.Data.BarCodeEventHandler;
 
-namespace Molmed.ChiasmaDep.Dialog 
+namespace ChiasmaDeposit.UI.LoadSampleStorageDialogs 
 {
     public partial class LoadSampleStorageDuoDialog : Form
     {
@@ -127,7 +130,7 @@ namespace Molmed.ChiasmaDep.Dialog
                     SampleStorageListView.Items.Add(new DuoViewItem(depositContainer, container));
                 }
                 SampleStorageListView.EndUpdate();
-                SampleStorageListView.Columns[(int)DuoViewItem.ListIndex.SampleContainer].Width = -2;
+                SampleStorageListView.Columns[(int)ListIndex.SampleContainer].Width = -2;
             }
         }
 
@@ -376,7 +379,7 @@ namespace Molmed.ChiasmaDep.Dialog
             try
             {
                 // Try to connect to the database.
-                ChiasmaDepData.Database = new Database.Dataserver(userName, password);
+                ChiasmaDepData.Database = new Molmed.ChiasmaDep.Database.Dataserver(userName, password);
                 if (!ChiasmaDepData.Database.Connect())
                 {
                     throw new Exception("Could not connect user " + userName + " to database");
@@ -516,62 +519,6 @@ namespace Molmed.ChiasmaDep.Dialog
                            Config.GetDialogTitleStandard(),
                            MessageBoxButtons.OK,
                            MessageBoxIcon.Exclamation);
-        }
-
-        private class DuoViewItem : ListViewItem
-        {
-            private readonly IGenericContainer _deposit;
-            private readonly IGenericContainer _sampleContainer;
-            private string _containerPath;
-
-            public enum ListIndex
-            {
-                SampleContainer = 0,
-                Storage = 1
-            }
-
-            public DuoViewItem(IGenericContainer deposit, IGenericContainer container)
-                : base(container.GetIdentifier())
-            {
-                _deposit = deposit;
-                _sampleContainer = container;
-                _containerPath = "";
-                SubItems.Add(deposit.GetIdentifier());
-                Checked = true;
-            }
-
-            public IGenericContainer GetSampleContainer()
-            {
-                return _sampleContainer;
-            }
-
-            public String GetContainerPath()
-            {
-                LoadContainerPath();
-                return _containerPath;
-            }
-
-            private void LoadContainerPath()
-            {
-                if (IsNotNull(_deposit) && _containerPath == "")
-                {
-                    StringBuilder pathRow = new StringBuilder();
-                    GenericContainerList pathList = _deposit.GetContainerPath();
-                    foreach (IGenericContainer singleContainer in pathList)
-                    {
-                        pathRow.Append("//");
-                        pathRow.Append(singleContainer.GetIdentifier());
-                    }
-                    pathRow.Append("//");
-                    pathRow.Append(_deposit.GetIdentifier());
-                    _containerPath = pathRow.ToString();
-                }
-            }
-
-            public IGenericContainer GetStorageContainer()
-            {
-                return _deposit;
-            }
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)

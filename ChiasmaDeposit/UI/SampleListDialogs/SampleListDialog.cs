@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Windows.Forms;
+using ChiasmaDeposit.UI.LoadSampleStorageDialogs;
+using Molmed.ChiasmaDep;
 using Molmed.ChiasmaDep.Data;
 using Molmed.ChiasmaDep.Data.Exception;
 
-namespace Molmed.ChiasmaDep.Dialog
+namespace ChiasmaDeposit.UI.SampleListDialogs
 {
     public partial class SampleListDialog : Form
     {
@@ -176,22 +178,6 @@ namespace Molmed.ChiasmaDep.Dialog
         private void InitListView()
         {
             SampleContainerListView.Columns.Add("Container to be placed", -2);
-        }
-
-        private class ContainerToBePlacedViewItem : ListViewItem
-        {
-            private readonly IGenericContainer _container;
-
-            public ContainerToBePlacedViewItem(IGenericContainer container)
-                : base(container.GetIdentifier())
-            {
-                _container = container;
-            }
-
-            public IGenericContainer GetContainerToBePlaced()
-            {
-                return _container;
-            }
         }
 
         private void OkButton_Click(object sender, EventArgs e)
