@@ -1,7 +1,8 @@
 using System;
 using System.Windows.Forms;
+using Molmed.ChiasmaDep;
 
-namespace Molmed.ChiasmaDep.Dialog
+namespace ChiasmaDeposit.UI
 {
     public partial class LoginDialog : Form
     {
