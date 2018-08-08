@@ -606,5 +606,11 @@ namespace ChiasmaDeposit.UI.LoadSampleStorageDialogs
                 HandleError("Could not print barcode!", ex);
             }
         }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AboutDialog aboutDialog = new AboutDialog();
+            aboutDialog.ShowDialog();
+        }
     }
 }
