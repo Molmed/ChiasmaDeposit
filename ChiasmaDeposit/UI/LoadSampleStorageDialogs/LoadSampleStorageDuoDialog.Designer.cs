@@ -46,6 +46,7 @@ namespace ChiasmaDeposit.UI.LoadSampleStorageDialogs
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.manualToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MySaveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.MyPrintDialog = new System.Windows.Forms.PrintDialog();
             this.label4 = new System.Windows.Forms.Label();
@@ -200,7 +201,8 @@ namespace ChiasmaDeposit.UI.LoadSampleStorageDialogs
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.manualToolStripMenuItem});
+            this.manualToolStripMenuItem,
+            this.aboutToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.helpToolStripMenuItem.Text = "Help";
@@ -208,9 +210,16 @@ namespace ChiasmaDeposit.UI.LoadSampleStorageDialogs
             // manualToolStripMenuItem
             // 
             this.manualToolStripMenuItem.Name = "manualToolStripMenuItem";
-            this.manualToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
+            this.manualToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.manualToolStripMenuItem.Text = "Manual";
             this.manualToolStripMenuItem.Click += new System.EventHandler(this.manualToolStripMenuItem_Click);
+            // 
+            // aboutToolStripMenuItem
+            // 
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.aboutToolStripMenuItem.Text = "About";
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
             // MySaveFileDialog
             // 
@@ -288,6 +297,7 @@ namespace ChiasmaDeposit.UI.LoadSampleStorageDialogs
         private System.Windows.Forms.ToolStripMenuItem manualToolStripMenuItem;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Panel ValidationReminderPanel;
+        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
     }
 }
 
