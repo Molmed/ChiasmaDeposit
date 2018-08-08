@@ -15,6 +15,13 @@ namespace Molmed.ChiasmaDep.Dialog
     {
         private IGenericContainer MyPutInContainer;
         private BarCodeController MyBarCodeController;
+
+        delegate void AddListviewItemCallback(ContainerToBePlacedViewItem item);
+
+        delegate void EnableOkButtonCallback();
+
+        delegate void UpdateContainerTextCallback(string container);
+
         public SampleListDialog()
         {
             InitializeComponent();
@@ -43,22 +50,68 @@ namespace Molmed.ChiasmaDep.Dialog
             }
         }
 
+        /// <summary>
+        /// Fix cross thread operation 
+        /// </summary>
+        /// <param name="item"></param>
+        private void AddListviewItem(ContainerToBePlacedViewItem item)
+        {
+            if (SampleContainerListView.InvokeRequired)
+            {
+                var d = new AddListviewItemCallback(AddListviewItem);
+                Invoke(d, item);
+            }
+            else
+            {
+                SampleContainerListView.Items.Add(item);
+            }
+        }
+
+        /// <summary>
+        /// Fix cross thread operation 
+        /// </summary>
+        private void EnableOkButton()
+        {
+            if (OkButton.InvokeRequired)
+            {
+                var d = new EnableOkButtonCallback(EnableOkButton);
+                Invoke(d);
+            }
+            else
+            {
+                OkButton.Enabled = true;
+            }
+        }
+
+        private void UpdateContainerText(string container)
+        {
+            if (PutInContainerTextBox.InvokeRequired)
+            {
+                var d = new UpdateContainerTextCallback(UpdateContainerText);
+                Invoke(d, container);
+            }
+            else
+            {
+                PutInContainerTextBox.Text = container;
+            }
+        }
+
         private void HandleReceivedBarCode(String barCode)
         {
             IGenericContainer container;
             container = GenericContainerManager.GetGenericContainerByBarCode(barCode);
             if (LoadSampleStorageDuoDialog.IsSampleContainer(container))
             {
-                SampleContainerListView.Items.Add(new ContainerToBePlacedViewItem(container));
+                AddListviewItem(new ContainerToBePlacedViewItem(container));
                 if (MyPutInContainer != null)
                 {
-                    OkButton.Enabled = true;
+                    EnableOkButton();
                 }
             }
             else if (LoadSampleStorageDuoDialog.IsStorageContainer(container))
             {
                 MyPutInContainer = container;
-                PutInContainerTextBox.Text = container.GetIdentifier();
+                UpdateContainerText(container.GetIdentifier());
                 DialogResult = DialogResult.OK;
             }
             else

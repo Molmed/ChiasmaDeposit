@@ -50,6 +50,9 @@ namespace Molmed.ChiasmaDep.Dialog
             }
         }
 
+        delegate void UpdateListViewCallback(GenericContainerList selectedContainers,
+            IGenericContainer depositContainer);
+
         private void ActivityTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             // Update activity information.
@@ -119,6 +122,26 @@ namespace Molmed.ChiasmaDep.Dialog
             return doublets;
         }
 
+        private void UpdateListView(GenericContainerList selectedContainers, 
+            IGenericContainer depositContainer)
+        {
+            if (SampleStorageListView.InvokeRequired)
+            {
+                var d = new UpdateListViewCallback(UpdateListView);
+                Invoke(d, selectedContainers, depositContainer);
+            }
+            else
+            {
+                SampleStorageListView.BeginUpdate();
+                foreach (IGenericContainer container in selectedContainers)
+                {
+                    SampleStorageListView.Items.Add(new DuoViewItem(depositContainer, container));
+                }
+                SampleStorageListView.EndUpdate();
+                SampleStorageListView.Columns[(int)DuoViewItem.ListIndex.SampleContainer].Width = -2;
+            }
+        }
+
         private void HandleReceivedBarCode(string barCode)
         {
             SampleListDialog sampleListDialog;
@@ -145,13 +168,7 @@ namespace Molmed.ChiasmaDep.Dialog
                     doubletsDialog.ShowDialog();
                     selectedContainers = uniqueList;
                 }
-                SampleStorageListView.BeginUpdate();
-                foreach (IGenericContainer container in selectedContainers)
-                {
-                    SampleStorageListView.Items.Add(new DuoViewItem(depositContainer, container));
-                }
-                SampleStorageListView.EndUpdate();
-                SampleStorageListView.Columns[(int)DuoViewItem.ListIndex.SampleContainer].Width = -2;
+                UpdateListView(selectedContainers, depositContainer);
                 this.printToolStripMenuItem.Enabled = true;
                 this.exportToolStripMenuItem.Enabled = true;
             }
