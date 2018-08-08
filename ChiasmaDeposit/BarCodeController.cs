@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
 using ChiasmaDeposit.Properties;
-using Molmed.ChiasmaDep;
 
 namespace Molmed.ChiasmaDep.Data
 {
