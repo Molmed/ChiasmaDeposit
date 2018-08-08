@@ -1,15 +1,12 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 using System.Collections;
-using Molmed.ChiasmaDep.IO;
+using System.Drawing;
+using System.Windows.Forms;
+using Molmed.ChiasmaDep;
 using Molmed.ChiasmaDep.Data;
+using Molmed.ChiasmaDep.IO;
 
-namespace Molmed.ChiasmaDep.Dialog
+namespace ChiasmaDeposit.UI
 {
     public partial class PrintBarCodeDialog : Form
     {

@@ -1,25 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
+using ChiasmaDeposit.UI.LoadSampleStorageDialogs;
+using Molmed.ChiasmaDep;
 using Molmed.ChiasmaDep.Data;
 using Molmed.ChiasmaDep.Data.Exception;
 
-namespace Molmed.ChiasmaDep.Dialog
+namespace ChiasmaDeposit.UI.SampleListDialogs
 {
     public partial class SampleListDialog : Form
     {
-        private IGenericContainer MyPutInContainer;
-        private BarCodeController MyBarCodeController;
+        private IGenericContainer _putInContainer;
+        private readonly BarCodeController _barCodeController;
+
+        delegate void AddListviewItemCallback(ContainerToBePlacedViewItem item);
+
+        delegate void EnableOkButtonCallback();
+
+        delegate void UpdateContainerTextCallback(string container);
+
         public SampleListDialog()
         {
             InitializeComponent();
-            MyPutInContainer = null;
-            MyBarCodeController = null;
+            _putInContainer = null;
+            _barCodeController = null;
             InitListView();
         }
 
@@ -27,8 +30,8 @@ namespace Molmed.ChiasmaDep.Dialog
         {
             InitializeComponent();
             InitListView();
-            MyBarCodeController = new BarCodeController(this);
-            MyBarCodeController.BarCodeReceived += new BarCodeEventHandler(BarCodeReceived);
+            _barCodeController = new BarCodeController(this);
+            _barCodeController.BarCodeReceived += BarCodeReceived;
             if (LoadSampleStorageDuoDialog.IsSampleContainer(container))
             {
                 InitWithSampleContainer(container);
@@ -39,32 +42,77 @@ namespace Molmed.ChiasmaDep.Dialog
             }
             else
             {
-                throw new Data.Exception.DataException("This container neither represent a sample container nor a deposit");            
+                throw new DataException("This container neither represent a sample container nor a deposit");            
+            }
+        }
+
+        /// <summary>
+        /// Fix cross thread operation 
+        /// </summary>
+        /// <param name="item"></param>
+        private void AddListviewItem(ContainerToBePlacedViewItem item)
+        {
+            if (SampleContainerListView.InvokeRequired)
+            {
+                var d = new AddListviewItemCallback(AddListviewItem);
+                Invoke(d, item);
+            }
+            else
+            {
+                SampleContainerListView.Items.Add(item);
+            }
+        }
+
+        /// <summary>
+        /// Fix cross thread operation 
+        /// </summary>
+        private void EnableOkButton()
+        {
+            if (OkButton.InvokeRequired)
+            {
+                var d = new EnableOkButtonCallback(EnableOkButton);
+                Invoke(d);
+            }
+            else
+            {
+                OkButton.Enabled = true;
+            }
+        }
+
+        private void UpdateContainerText(string container)
+        {
+            if (PutInContainerTextBox.InvokeRequired)
+            {
+                var d = new UpdateContainerTextCallback(UpdateContainerText);
+                Invoke(d, container);
+            }
+            else
+            {
+                PutInContainerTextBox.Text = container;
             }
         }
 
         private void HandleReceivedBarCode(String barCode)
         {
-            IGenericContainer container;
-            container = GenericContainerManager.GetGenericContainerByBarCode(barCode);
+            var container = GenericContainerManager.GetGenericContainerByBarCode(barCode);
             if (LoadSampleStorageDuoDialog.IsSampleContainer(container))
             {
-                SampleContainerListView.Items.Add(new ContainerToBePlacedViewItem(container));
-                if (MyPutInContainer != null)
+                AddListviewItem(new ContainerToBePlacedViewItem(container));
+                if (_putInContainer != null)
                 {
-                    OkButton.Enabled = true;
+                    EnableOkButton();
                 }
             }
             else if (LoadSampleStorageDuoDialog.IsStorageContainer(container))
             {
-                MyPutInContainer = container;
-                PutInContainerTextBox.Text = container.GetIdentifier();
+                _putInContainer = container;
+                UpdateContainerText(container.GetIdentifier());
                 DialogResult = DialogResult.OK;
             }
             else
             {
-                throw new Data.Exception.DataException("This container neither represent a sample container nor a deposit");
-            }        
+                throw new DataException("This container neither represent a sample container nor a deposit");
+            }
         }
 
         private void BarCodeReceived(String barCode)
@@ -85,7 +133,7 @@ namespace Molmed.ChiasmaDep.Dialog
         }
 
 
-        protected void ShowWarning(String message)
+        private void ShowWarning(String message)
         {
             MessageBox.Show(message,
                            Config.GetDialogTitleStandard(),
@@ -99,14 +147,14 @@ namespace Molmed.ChiasmaDep.Dialog
             SampleContainerListView.BeginUpdate();
             SampleContainerListView.Items.Add(new ContainerToBePlacedViewItem(container));
             SampleContainerListView.EndUpdate();
-            MyPutInContainer = null;
+            _putInContainer = null;
             StatusLabel.Text = "Waiting for more scanned containers (plates/tubes/etc). \nClose and go to next step by scan a deposit (Box/Shelf/Freezer/etc)";
             OkButton.Enabled = false;
         }
 
         public IGenericContainer GetSelectedDeposit()
         {
-            return MyPutInContainer;
+            return _putInContainer;
         }
 
         public GenericContainerList GetSelectedContainers()
@@ -123,29 +171,13 @@ namespace Molmed.ChiasmaDep.Dialog
         {
             StatusLabel.Text = "Waiting for scanned containers (plates/tubes/etc) to be placed in the deposit below. \nClose and go to next step by pressing OK or cancel.";
             PutInContainerTextBox.Text = container.GetIdentifier();
-            MyPutInContainer = container;
+            _putInContainer = container;
             OkButton.Enabled = false;
         }
 
         private void InitListView()
         {
             SampleContainerListView.Columns.Add("Container to be placed", -2);
-        }
-
-        private class ContainerToBePlacedViewItem : ListViewItem
-        {
-            private IGenericContainer MyContainer;
-
-            public ContainerToBePlacedViewItem(IGenericContainer container)
-                : base(container.GetIdentifier())
-            {
-                MyContainer = container;
-            }
-
-            public IGenericContainer GetContainerToBePlaced()
-            {
-                return MyContainer;
-            }
         }
 
         private void OkButton_Click(object sender, EventArgs e)
