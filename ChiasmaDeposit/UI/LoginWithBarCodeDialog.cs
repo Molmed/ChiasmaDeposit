@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Drawing;
+using System.Threading;
 using System.Windows.Forms;
 using Molmed.ChiasmaDep.Data;
 
@@ -9,28 +9,26 @@ namespace ChiasmaDeposit.UI
     {
         private delegate void BarcodeReceivedCallback(string barcode);
 
-        private string MyBarcode;
-        private int MyShrinkDistance;
+        private string _barcode;
+        private int _shrinkDistance;
 
         public LoginWithBarcodeDialog()
         {
-            MyShrinkDistance = -1;
+            _shrinkDistance = -1;
             InitializeComponent();
-            MyBarcode = "";
+            _barcode = "";
             Init();
         }
 
         private void Init()
         {
-            Point locA, locB;
-            BarCodeController barCodeController;
             BarcodeTextBox.Select();
             //BarcodeCatcherTextBox.Width = 0;
-            barCodeController = new BarCodeController(this);
-            barCodeController.BarCodeReceived += new BarCodeEventHandler(BarCodeReceived);
-            locA = ManualCheckBox.Location;
-            locB = BarcodeTextBox.Location;
-            MyShrinkDistance = (locB.Y + BarcodeTextBox.Height) - (locA.Y + ManualCheckBox.Height);
+            var barCodeController = new BarCodeController(this);
+            barCodeController.BarCodeReceived += BarCodeReceived;
+            var locA = ManualCheckBox.Location;
+            var locB = BarcodeTextBox.Location;
+            _shrinkDistance = (locB.Y + BarcodeTextBox.Height) - (locA.Y + ManualCheckBox.Height);
             MakeManualLoginInvisible();
         }
 
@@ -39,8 +37,8 @@ namespace ChiasmaDeposit.UI
             BarcodeLabel.Visible = false;
             BarcodeTextBox.Visible = false;
             MyOkButton.Visible = false;
-            this.AcceptButton = null;
-            this.Height -= MyShrinkDistance;
+            AcceptButton = null;
+            Height -= _shrinkDistance;
             ManualCheckBox.Select();
         }
 
@@ -49,8 +47,8 @@ namespace ChiasmaDeposit.UI
             BarcodeLabel.Visible = true;
             BarcodeTextBox.Visible = true;
             MyOkButton.Visible = true;
-            this.AcceptButton = MyOkButton;
-            this.Height += MyShrinkDistance;
+            AcceptButton = MyOkButton;
+            Height += _shrinkDistance;
             BarcodeTextBox.Select();
         }
 
@@ -63,20 +61,15 @@ namespace ChiasmaDeposit.UI
             }
             else
             {
-                MyBarcode = barcode;
+                Thread.Sleep(200);
+                _barcode = barcode;
                 DialogResult = DialogResult.OK;
                 Close();
             }
 
         }
 
-        public string Barcode
-        {
-            get
-            {
-                return MyBarcode;
-            }
-        }
+        public string Barcode => _barcode;
 
         private Boolean IsNotEmpty(String testString)
         {
@@ -88,14 +81,14 @@ namespace ChiasmaDeposit.UI
         {
             if (IsNotEmpty(BarcodeTextBox.Text.Trim()))
             {
-                MyBarcode = BarcodeTextBox.Text.Trim();
+                _barcode = BarcodeTextBox.Text.Trim();
             }
-            DialogResult = System.Windows.Forms.DialogResult.OK;
+            DialogResult = DialogResult.OK;
         }
 
         private void MyCancelButton_Click(object sender, EventArgs e)
         {
-            DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            DialogResult = DialogResult.Cancel;
         }
 
         private void ManualCheckBox_CheckedChanged(object sender, EventArgs e)
