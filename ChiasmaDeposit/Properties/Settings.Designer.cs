@@ -70,7 +70,7 @@ namespace ChiasmaDeposit.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("OFFICE")]
+        [global::System.Configuration.DefaultSettingValueAttribute("LAB")]
         public string ApplicationMode {
             get {
                 return ((string)(this["ApplicationMode"]));

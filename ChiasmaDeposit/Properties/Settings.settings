@@ -18,7 +18,7 @@
       <Value Profile="(Default)">2</Value>
     </Setting>
     <Setting Name="ApplicationMode" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">OFFICE</Value>
+      <Value Profile="(Default)">LAB</Value>
     </Setting>
     <Setting Name="AutomaticLogoutTimeLimit" Type="System.Int32" Scope="Application">
       <Value Profile="(Default)">1200</Value>
