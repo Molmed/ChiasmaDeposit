@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Windows.Forms;
 using Molmed.ChiasmaDep.Data;
 
@@ -60,6 +61,7 @@ namespace ChiasmaDeposit.UI
             }
             else
             {
+                Thread.Sleep(200);
                 _barcode = barcode;
                 DialogResult = DialogResult.OK;
                 Close();
