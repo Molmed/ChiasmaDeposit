@@ -48,10 +48,10 @@ namespace Molmed.ChiasmaDep.Data
                     _barCodeString += e.KeyCode.ToString().Substring(1);
 
                     if (QuitAtInternalBarcodeLength &&
-                        _barCodeString.Length == Settings.Default.BarCodeLengthInternal &&
-                        IsNotNull(BarCodeReceived))
+                        _barCodeString.Length == Settings.Default.BarCodeLengthInternal)
                     {
                         BarCodeReceived?.Invoke(_barCodeString);
+                        _ongoingBarcodeReading = false;
                     }
 
                     break;
