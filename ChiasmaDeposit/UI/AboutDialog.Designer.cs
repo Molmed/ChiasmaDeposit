@@ -39,7 +39,7 @@
             // 
             this.OkButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.OkButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.OkButton.Location = new System.Drawing.Point(120, 89);
+            this.OkButton.Location = new System.Drawing.Point(157, 89);
             this.OkButton.Name = "OkButton";
             this.OkButton.Size = new System.Drawing.Size(75, 23);
             this.OkButton.TabIndex = 0;
@@ -52,9 +52,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(287, 13);
+            this.label1.Size = new System.Drawing.Size(349, 13);
             this.label1.TabIndex = 1;
-            this.label1.Text = "Support to place sample containers using barcode scanner.";
+            this.label1.Text = "Support registering location of sample containers using barcode scanner.";
             // 
             // label2
             // 
@@ -80,7 +80,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.OkButton;
-            this.ClientSize = new System.Drawing.Size(327, 124);
+            this.ClientSize = new System.Drawing.Size(388, 124);
             this.Controls.Add(this.VersionLabel);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);

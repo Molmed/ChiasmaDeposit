@@ -79,6 +79,7 @@
     <Compile Include="Data\TubeRackForTags.cs" />
     <Compile Include="Data\TubeRackManager.cs" />
     <Compile Include="Data\TubeRackType.cs" />
+    <Compile Include="Data\VersionProvider.cs" />
     <Compile Include="IO\FileServer.cs" />
     <Compile Include="IO\LabelPrinter.cs" />
     <Compile Include="Data\LoadSampleStoreageDuos.cs" />

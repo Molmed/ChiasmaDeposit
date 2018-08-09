@@ -12,12 +12,6 @@ namespace ChiasmaDeposit.UI.SampleListDialogs
         private IGenericContainer _putInContainer;
         private readonly BarCodeController _barCodeController;
 
-        delegate void AddListviewItemCallback(ContainerToBePlacedViewItem item);
-
-        delegate void EnableOkButtonCallback();
-
-        delegate void UpdateContainerTextCallback(string container);
-
         public SampleListDialog()
         {
             InitializeComponent();
@@ -46,50 +40,19 @@ namespace ChiasmaDeposit.UI.SampleListDialogs
             }
         }
 
-        /// <summary>
-        /// Fix cross thread operation 
-        /// </summary>
-        /// <param name="item"></param>
         private void AddListviewItem(ContainerToBePlacedViewItem item)
         {
-            if (SampleContainerListView.InvokeRequired)
-            {
-                var d = new AddListviewItemCallback(AddListviewItem);
-                Invoke(d, item);
-            }
-            else
-            {
-                SampleContainerListView.Items.Add(item);
-            }
+            SampleContainerListView.Items.Add(item);
         }
 
-        /// <summary>
-        /// Fix cross thread operation 
-        /// </summary>
         private void EnableOkButton()
         {
-            if (OkButton.InvokeRequired)
-            {
-                var d = new EnableOkButtonCallback(EnableOkButton);
-                Invoke(d);
-            }
-            else
-            {
-                OkButton.Enabled = true;
-            }
+            OkButton.Enabled = true;
         }
 
         private void UpdateContainerText(string container)
         {
-            if (PutInContainerTextBox.InvokeRequired)
-            {
-                var d = new UpdateContainerTextCallback(UpdateContainerText);
-                Invoke(d, container);
-            }
-            else
-            {
-                PutInContainerTextBox.Text = container;
-            }
+            PutInContainerTextBox.Text = container;
         }
 
         private void HandleReceivedBarCode(String barCode)
