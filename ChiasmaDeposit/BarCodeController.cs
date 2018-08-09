@@ -19,10 +19,7 @@ namespace Molmed.ChiasmaDep.Data
             _barCodeString = null;
             form.KeyPreview = true;
             form.KeyDown += Form_KeyDown;
-            QuitAtInternalBarcodeLength = true;
         }
-
-        private bool QuitAtInternalBarcodeLength { get; }
 
         private void Form_KeyDown(object sender, KeyEventArgs e)
         {
@@ -47,8 +44,7 @@ namespace Molmed.ChiasmaDep.Data
                     // Add digit.
                     _barCodeString += e.KeyCode.ToString().Substring(1);
 
-                    if (QuitAtInternalBarcodeLength &&
-                        _barCodeString.Length == Settings.Default.BarCodeLengthInternal)
+                    if (_barCodeString.Length == Settings.Default.BarCodeLengthInternal)
                     {
                         BarCodeReceived?.Invoke(_barCodeString);
                         _ongoingBarcodeReading = false;
@@ -62,6 +58,11 @@ namespace Molmed.ChiasmaDep.Data
             }
             e.Handled = true;
             e.SuppressKeyPress = true;
+        }
+
+        public void Reset()
+        {
+            _ongoingBarcodeReading = false;
         }
     }
 }
