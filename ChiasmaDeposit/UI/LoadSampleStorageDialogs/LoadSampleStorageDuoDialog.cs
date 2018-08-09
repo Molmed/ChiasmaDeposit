@@ -43,9 +43,6 @@ namespace ChiasmaDeposit.UI.LoadSampleStorageDialogs
             }
         }
 
-        delegate void UpdateListViewCallback(GenericContainerList selectedContainers,
-            IGenericContainer depositContainer);
-
         private void ActivityTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             // Update activity information.
@@ -117,21 +114,13 @@ namespace ChiasmaDeposit.UI.LoadSampleStorageDialogs
         private void UpdateListView(GenericContainerList selectedContainers, 
             IGenericContainer depositContainer)
         {
-            if (SampleStorageListView.InvokeRequired)
+            SampleStorageListView.BeginUpdate();
+            foreach (IGenericContainer container in selectedContainers)
             {
-                var d = new UpdateListViewCallback(UpdateListView);
-                Invoke(d, selectedContainers, depositContainer);
+                SampleStorageListView.Items.Add(new DuoViewItem(depositContainer, container));
             }
-            else
-            {
-                SampleStorageListView.BeginUpdate();
-                foreach (IGenericContainer container in selectedContainers)
-                {
-                    SampleStorageListView.Items.Add(new DuoViewItem(depositContainer, container));
-                }
-                SampleStorageListView.EndUpdate();
-                SampleStorageListView.Columns[(int)ListIndex.SampleContainer].Width = -2;
-            }
+            SampleStorageListView.EndUpdate();
+            SampleStorageListView.Columns[(int)ListIndex.SampleContainer].Width = -2;
         }
 
         private void HandleReceivedBarCode(string barCode)
