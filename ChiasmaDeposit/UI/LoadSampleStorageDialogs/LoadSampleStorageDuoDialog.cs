@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Timers;
 using System.Windows.Forms;
+using ChiasmaDeposit.Data;
 using ChiasmaDeposit.Properties;
 using ChiasmaDeposit.UI.SampleListDialogs;
 using Molmed.ChiasmaDep;
@@ -229,6 +230,8 @@ namespace ChiasmaDeposit.UI.LoadSampleStorageDialogs
                 ValidationReminderPanel.BackgroundImage = Resources.DevelBackground;
             }
 
+            var versionProvider = new VersionProvider();
+            Text += $", ChiasmaDeposit {versionProvider.GetApplicationVersion()}";
         }
 
         private void InitListView()
