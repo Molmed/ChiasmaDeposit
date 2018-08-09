@@ -60,6 +60,8 @@ namespace Molmed.ChiasmaDep.Data
                     _ongoingBarcodeReading = false;
                     break;
             }
+            e.Handled = true;
+            e.SuppressKeyPress = true;
         }
     }
 }
