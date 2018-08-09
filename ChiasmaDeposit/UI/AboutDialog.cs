@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
+using ChiasmaDeposit.Data;
 
 namespace ChiasmaDeposit.UI
 {
@@ -15,10 +16,8 @@ namespace ChiasmaDeposit.UI
         public AboutDialog()
         {
             InitializeComponent();
-            var version = $"{Assembly.GetExecutingAssembly().GetName().Version.Major}." +
-                          $"{Assembly.GetExecutingAssembly().GetName().Version.Minor}." +
-                          $"{Assembly.GetExecutingAssembly().GetName().Version.Build}";
-            VersionLabel.Text = version;
+            var versionProvider = new VersionProvider();
+            VersionLabel.Text = versionProvider.GetApplicationVersion();
         }
 
         private void OkButton_Click(object sender, EventArgs e)
