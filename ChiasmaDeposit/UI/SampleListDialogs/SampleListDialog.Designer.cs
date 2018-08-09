@@ -1,4 +1,4 @@
-﻿namespace Molmed.ChiasmaDep.Dialog
+﻿namespace ChiasmaDeposit.UI.SampleListDialogs
 {
     partial class SampleListDialog
     {
@@ -39,9 +39,9 @@
             // 
             // SampleContainerListView
             // 
-            this.SampleContainerListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.SampleContainerListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.SampleContainerListView.FullRowSelect = true;
             this.SampleContainerListView.GridLines = true;
             this.SampleContainerListView.Location = new System.Drawing.Point(12, 122);
@@ -85,8 +85,8 @@
             // 
             // PutInContainerTextBox
             // 
-            this.PutInContainerTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.PutInContainerTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.PutInContainerTextBox.Location = new System.Drawing.Point(12, 79);
             this.PutInContainerTextBox.Name = "PutInContainerTextBox";
             this.PutInContainerTextBox.ReadOnly = true;
@@ -106,6 +106,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.MyCancelButton;
             this.ClientSize = new System.Drawing.Size(431, 477);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.PutInContainerTextBox);

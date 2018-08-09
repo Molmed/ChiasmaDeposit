@@ -1,7 +1,7 @@
 using System;
 using System.Windows.Forms;
 
-namespace Molmed.ChiasmaDep.Dialog
+namespace ChiasmaDeposit.UI
 {
     public partial class ShowErrorDialog : Form
     {

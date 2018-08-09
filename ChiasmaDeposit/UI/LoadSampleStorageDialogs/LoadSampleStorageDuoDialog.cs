@@ -1,40 +1,33 @@
 using System;
-using System.Collections.Generic;
 using System.Collections;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Reflection;
-using System.Windows.Forms;
-using System.Timers;
-using System.IO;
-using System.Drawing.Printing;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Printing;
+using System.IO;
+using System.Reflection;
+using System.Text;
+using System.Timers;
+using System.Windows.Forms;
+using ChiasmaDeposit.Data;
 using ChiasmaDeposit.Properties;
+using ChiasmaDeposit.UI.SampleListDialogs;
 using Molmed.ChiasmaDep;
 using Molmed.ChiasmaDep.Data;
 using Molmed.ChiasmaDep.Data.Exception;
-using Molmed.ChiasmaDep.Database;
 using BarCodeEventHandler = Molmed.ChiasmaDep.Data.BarCodeEventHandler;
 
-namespace Molmed.ChiasmaDep.Dialog 
+namespace ChiasmaDeposit.UI.LoadSampleStorageDialogs 
 {
     public partial class LoadSampleStorageDuoDialog : Form
     {
-        private enum ShowMode : int
-        { 
-            OnlyValid = 0,
-            All = 1
-        }
+        private Int32 _activityCounter;
+        private Point _lastMousePos;
 
-        private Int32 MyActivityCounter;
-        private Point MyLastMousePos;
+        private LoginWithBarcodeDialog _loginWithBarcodeDialog;
 
-        private LoginWithBarcodeDialog MyLoginWithBarcodeDialog;
-
-        private BarCodeEventHandler MyBarcodeEventhandler;
-        private BarCodeController MyBarCodeController;
+        private BarCodeEventHandler _barcodeEventhandler;
+        private BarCodeController _barCodeController;
 
         public LoadSampleStorageDuoDialog()
         {
@@ -53,25 +46,24 @@ namespace Molmed.ChiasmaDep.Dialog
         private void ActivityTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             // Update activity information.
-            if (MousePosition == MyLastMousePos)
+            if (MousePosition == _lastMousePos)
             {
-                MyActivityCounter++;
+                _activityCounter++;
             }
             else
             {
-                MyLastMousePos = MousePosition;
-                MyActivityCounter = 0;
+                _lastMousePos = MousePosition;
+                _activityCounter = 0;
             }
-            ShowTimeLeft();
 
             // Check if it is time for automatic logout.
-            if (MyActivityCounter > Config.GetAutomaticLogoutTimeLimit())
+            if (_activityCounter > Config.GetAutomaticLogoutTimeLimit())
             {
                 Reset();
             }
         }
 
-        public void BarCodeReceived(String barCode)
+        private void BarCodeReceived(String barCode)
         {
             try
             {
@@ -87,7 +79,7 @@ namespace Molmed.ChiasmaDep.Dialog
             }
             finally
             {
-                MyActivityCounter = 0;
+                _activityCounter = 0;
             }
         }
 
@@ -119,44 +111,42 @@ namespace Molmed.ChiasmaDep.Dialog
             return doublets;
         }
 
+        private void UpdateListView(GenericContainerList selectedContainers, 
+            IGenericContainer depositContainer)
+        {
+            SampleStorageListView.BeginUpdate();
+            foreach (IGenericContainer container in selectedContainers)
+            {
+                SampleStorageListView.Items.Add(new DuoViewItem(depositContainer, container));
+            }
+            SampleStorageListView.EndUpdate();
+            SampleStorageListView.Columns[(int)ListIndex.SampleContainer].Width = -2;
+        }
+
         private void HandleReceivedBarCode(string barCode)
         {
-            SampleListDialog sampleListDialog;
-            IGenericContainer genericContainer;
-            IGenericContainer depositContainer;
-            GenericContainerList selectedContainers;
-            GenericContainerList doublets, uniqueList;
-            DoubletsDialog doubletsDialog;
-            genericContainer = GenericContainerManager.GetGenericContainerByBarCode(barCode);
+            var genericContainer = GenericContainerManager.GetGenericContainerByBarCode(barCode);
             if (!CheckContainerType(genericContainer))
             {
-                throw new Data.Exception.DataException("This bar code neither represent a sample container nor a deposit");
+                throw new DataException("This bar code neither represent a sample container nor a deposit");
             }
-            sampleListDialog = new SampleListDialog(genericContainer);
-            MyBarCodeController = null;
+            var sampleListDialog = new SampleListDialog(genericContainer);
+            _barCodeController = null;
             if (sampleListDialog.ShowDialog() == DialogResult.OK)
             {
-                depositContainer = sampleListDialog.GetSelectedDeposit();
-                selectedContainers = sampleListDialog.GetSelectedContainers();
-                doublets = GetDoublets(selectedContainers, out uniqueList);
+                var depositContainer = sampleListDialog.GetSelectedDeposit();
+                var selectedContainers = sampleListDialog.GetSelectedContainers();
+                var doublets = GetDoublets(selectedContainers, out var uniqueList);
                 if (doublets.Count > 0)
                 {
-                    doubletsDialog = new DoubletsDialog(doublets, "These duplicates are sorted out from the list!");
+                    var doubletsDialog = new DoubletsDialog(doublets, "These duplicates are sorted out from the list!");
                     doubletsDialog.ShowDialog();
                     selectedContainers = uniqueList;
                 }
-                SampleStorageListView.BeginUpdate();
-                foreach (IGenericContainer container in selectedContainers)
-                {
-                    SampleStorageListView.Items.Add(new DuoViewItem(depositContainer, container));
-                }
-                SampleStorageListView.EndUpdate();
-                SampleStorageListView.Columns[(int)DuoViewItem.ListIndex.SampleContainer].Width = -2;
-                this.printToolStripMenuItem.Enabled = true;
-                this.exportToolStripMenuItem.Enabled = true;
+                UpdateListView(selectedContainers, depositContainer);
+                printToolStripMenuItem.Enabled = true;
+                exportToolStripMenuItem.Enabled = true;
             }
-            MyBarCodeController = new BarCodeController(this);
-            MyBarCodeController.BarCodeReceived += MyBarcodeEventhandler;
         }
 
         private bool CheckContainerType(IGenericContainer genericContainer)
@@ -204,16 +194,9 @@ namespace Molmed.ChiasmaDep.Dialog
             Close();
         }
 
-        public static String GetApplicationPath()
-        {
-            return Application.StartupPath;
-        }
-
         public static void HandleError(String message, Exception exception)
         {
-            ShowErrorDialog errorDialog;
-
-            errorDialog = new ShowErrorDialog(message, exception);
+            var errorDialog = new ShowErrorDialog(message, exception);
             errorDialog.ShowDialog();
         }
 
@@ -221,9 +204,9 @@ namespace Molmed.ChiasmaDep.Dialog
         {
             InitListView();
             // Init barcode controller
-            MyBarCodeController = new BarCodeController(this);
-            MyBarcodeEventhandler = new BarCodeEventHandler(BarCodeReceived);
-            MyBarCodeController.BarCodeReceived += MyBarcodeEventhandler;
+            _barCodeController = new BarCodeController(this);
+            _barcodeEventhandler = BarCodeReceived;
+            _barCodeController.BarCodeReceived += _barcodeEventhandler;
             IdentificationTextBox.Text = UserManager.GetCurrentUser().GetName();
             if (Settings.Default.DatabaseName.ToLower().Contains("practice"))
             {
@@ -236,6 +219,8 @@ namespace Molmed.ChiasmaDep.Dialog
                 ValidationReminderPanel.BackgroundImage = Resources.DevelBackground;
             }
 
+            var versionProvider = new VersionProvider();
+            Text += $", ChiasmaDeposit {versionProvider.GetApplicationVersion()}";
         }
 
         private void InitListView()
@@ -245,32 +230,17 @@ namespace Molmed.ChiasmaDep.Dialog
             SampleStorageListView.Columns.Add("Storage", -2);
         }
 
-        protected static Boolean IsEmpty(ICollection collection)
-        {
-            return ((collection == null) || (collection.Count == 0));
-        }
-
-        protected static Boolean IsEmpty(String testString)
-        {
-            return (testString == null) || (testString.Trim().Length == 0);
-        }
-
-        protected static Boolean IsNotEmpty(ICollection collection)
+        private static Boolean IsNotEmpty(ICollection collection)
         {
             return ((collection != null) && (collection.Count > 0));
         }
 
-        protected static Boolean IsNotEmpty(String testString)
-        {
-            return (testString != null) && (testString.Trim().Length > 0);
-        }
-
-        protected static Boolean IsNotNull(Object testObject)
+        private static Boolean IsNotNull(Object testObject)
         {
             return (testObject != null);
         }
 
-        protected static Boolean IsNull(Object testObject)
+        private static Boolean IsNull(Object testObject)
         {
             return (testObject == null);
         }
@@ -278,10 +248,7 @@ namespace Molmed.ChiasmaDep.Dialog
         public bool Login(bool versionControl)
         {
             // BarCodeController barCodeController;
-            Boolean isLoginOk = false;
-            String version;
-            String applicationName;
-            string barcode;
+            Boolean isLoginOk;
 
             if (Config.GetApplicationMode() == Config.ApplicationMode.Lab)
             {
@@ -294,18 +261,19 @@ namespace Molmed.ChiasmaDep.Dialog
                     return false;
                 }
 
+                string barcode;
                 do
                 {
                     // Get login information.
-                    MyLoginWithBarcodeDialog = new LoginWithBarcodeDialog();
+                    _loginWithBarcodeDialog = new LoginWithBarcodeDialog();
 
                     // Login by bar code is currently not supported.
                     // barCodeController = new BarCodeController(MyLoginForm);
                     // barCodeController.BarCodeReceived += ExecuteBarCode;
-                    if (MyLoginWithBarcodeDialog.ShowDialog() == DialogResult.OK)
+                    if (_loginWithBarcodeDialog.ShowDialog() == DialogResult.OK)
                     {
-                        barcode = MyLoginWithBarcodeDialog.Barcode;
-                        MyLoginWithBarcodeDialog = null;
+                        barcode = _loginWithBarcodeDialog.Barcode;
+                        _loginWithBarcodeDialog = null;
                     }
                     else
                     {
@@ -322,7 +290,7 @@ namespace Molmed.ChiasmaDep.Dialog
 
                 // Start the activity timer. It is used for automatic logout in lab mode.
                 ActivityTimer.Enabled = false;
-                MyActivityCounter = 0;
+                _activityCounter = 0;
                 isLoginOk = true;
             }
             else
@@ -342,13 +310,13 @@ namespace Molmed.ChiasmaDep.Dialog
                 if (versionControl)
                 {
                     // Get version number of the current assembly.
-                    version = Assembly.GetExecutingAssembly().GetName().Version.Major + "." +
-                              Assembly.GetExecutingAssembly().GetName().Version.Minor + "." +
-                              Assembly.GetExecutingAssembly().GetName().Version.Build + "." +
-                              Assembly.GetExecutingAssembly().GetName().Version.Revision;
+                    var version = Assembly.GetExecutingAssembly().GetName().Version.Major + "." +
+                                     Assembly.GetExecutingAssembly().GetName().Version.Minor + "." +
+                                     Assembly.GetExecutingAssembly().GetName().Version.Build + "." +
+                                     Assembly.GetExecutingAssembly().GetName().Version.Revision;
 
                     // Get the name of the current assembly.
-                    applicationName = Assembly.GetExecutingAssembly().GetName().Name;
+                    var applicationName = Assembly.GetExecutingAssembly().GetName().Name;
 
                     // Make sure the current application is allowed to connect.
                     if (!ChiasmaDepData.Database.AuthenticateApplication(applicationName, version))
@@ -380,7 +348,7 @@ namespace Molmed.ChiasmaDep.Dialog
                 UserManager.SetAuthorityMappingFromBarcode(userBarcode);
                 ChiasmaDepData.CommitTransaction();
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 ChiasmaDepData.RollbackTransaction();
                 HandleError("Could not logon to database", ex);
@@ -395,125 +363,14 @@ namespace Molmed.ChiasmaDep.Dialog
         }
 
 
-
-        public Boolean Login_old(Boolean versionControl)
-        {
-            String version;
-            String applicationName;
-
-            if (versionControl)
-            {
-                // Get version number of the current assembly.
-                version = Assembly.GetExecutingAssembly().GetName().Version.Major + "." +
-                          Assembly.GetExecutingAssembly().GetName().Version.Minor + "." +
-                          Assembly.GetExecutingAssembly().GetName().Version.Build + "." +
-                          Assembly.GetExecutingAssembly().GetName().Version.Revision;
-
-                // Get the name of the current assembly.
-                applicationName = Assembly.GetExecutingAssembly().GetName().Name;
-
-                // Make sure the current application is allowed to connect.
-                try
-                {
-                    if (!(LoginDataBase() &&
-                          (ChiasmaDepData.Database.AuthenticateApplication(applicationName, version))))
-                    {
-                        HandleError("The current version of this program is not allowed to connect to the database.", null);
-                        return false;
-                    }
-                }
-                finally
-                {
-                    LogoutDatabase();
-                }
-            }
-
-            return Login();
-        }
-
-        private Boolean Login()
-        {
-            // BarCodeController barCodeController;
-            Boolean isLoginOk = false;
-            string userBarcode = "";
-
-
-            if (Config.GetApplicationMode() == Config.ApplicationMode.Lab)
-            {
-                // LAB MODE
-                // Enable background bar code listening.
-                KeyPreview = true;
-
-                if (!LoginDataBase())
-                {
-                    return false;
-                }
-
-                do
-                {
-                    // Get login information.
-                    MyLoginWithBarcodeDialog = new LoginWithBarcodeDialog();
-
-                    // Login by bar code is currently not supported.
-                    // barCodeController = new BarCodeController(MyLoginForm);
-                    // barCodeController.BarCodeReceived += ExecuteBarCode;
-                    if (MyLoginWithBarcodeDialog.ShowDialog() == DialogResult.OK)
-                    {
-                        userBarcode = MyLoginWithBarcodeDialog.Barcode;
-                        MyLoginWithBarcodeDialog = null;
-                    }
-                    else
-                    {
-                        // The user cancelled.
-                        return false;
-                    }
-                }   // Try to login to the database.
-                while (!SetAuthorityMappingForBarcode(userBarcode));
-
-                UserManager.Refresh();
-                Text = Config.GetDialogTitleStandard() + " - " + UserManager.GetCurrentUser().GetName();
-
-                // Start the activity timer. It is used for automatic logout in lab mode.
-                this.ActivityTimer.Enabled = true;
-                MyActivityCounter = 0;
-                isLoginOk = true;
-            }
-            else
-            {
-                // OFFICE MODE
-                isLoginOk = LoginDataBase();
-                SetAuthorityMappingFromSysUser();
-            }
-
-            if (!UserManager.GetCurrentUser().IsAccountActive())
-            {
-                throw new Exception("User " + UserManager.GetCurrentUser().GetName() + " has been inactivated");
-            }
-
-            if (isLoginOk)
-            {
-                // Cache data.
-                // This is done in order to avoid DateReader already open exception.
-                ChiasmaDepData.Refresh();
-                //ActivityTimer.Enabled = true;
-            }
-
-            return isLoginOk;
-        }
-
-        private Boolean LoginDataBase()
-        {
-            return LoginDataBase(null, null);
-        }
-
-        private Boolean LoginDataBase(String userName, String password)
+        private Boolean LoginDataBase(String userName = null, String password = null)
         {
             // Set newLoginInfo to "null" for integrated security, or to a user name and password for manual login.
 
             try
             {
                 // Try to connect to the database.
-                ChiasmaDepData.Database = new Database.Dataserver(userName, password);
+                ChiasmaDepData.Database = new Molmed.ChiasmaDep.Database.Dataserver(userName, password);
                 if (!ChiasmaDepData.Database.Connect())
                 {
                     throw new Exception("Could not connect user " + userName + " to database");
@@ -526,21 +383,6 @@ namespace Molmed.ChiasmaDep.Dialog
                 return false;
             }
             return true;
-        }
-
-        private void Logout()
-        {
-            // Close the child forms.
-            foreach (Form child in MdiChildren)
-            {
-                child.Close();
-            }
-
-            LogoutDatabase();
-            Text = Config.GetDialogTitleStandard();
-
-            // Reset the login information
-            ActivityTimer.Enabled = false;
         }
 
         public static void LogoutDatabase()
@@ -556,11 +398,9 @@ namespace Molmed.ChiasmaDep.Dialog
 
         private void manualToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            String manualFileName;
-
             try
             {
-                manualFileName = "\"" + Config.GetApplicationPath() + "\\ChiasmaDeposit User Manual.docx" + "\"";
+                var manualFileName = "\"" + Config.GetApplicationPath() + "\\ChiasmaDeposit User Manual.docx" + "\"";
                 Process.Start("WinWord.exe", manualFileName);
             }
             catch (Exception exception)
@@ -599,13 +439,6 @@ namespace Molmed.ChiasmaDep.Dialog
             //ActivityTimer.Stop();
         }
 
-        private void RestartTimer()
-        {
-            MyActivityCounter = 0;
-            ActivityTimer.Start();
-            ShowTimeLeft();
-        }
-
 
         private void ResetButton_Click(object sender, EventArgs e)
         {
@@ -638,14 +471,12 @@ namespace Molmed.ChiasmaDep.Dialog
         {
             // Get every checked row (SampleStorageDuos) that are okey, 
             // update database for each of them
-            GenericContainerList doublets;
-            DoubletsDialog doubletsDialog;
             try
             {
-                doublets = GetDoublets();
+                var doublets = GetDoublets();
                 if (IsNotEmpty(doublets))
                 {
-                    doubletsDialog = new DoubletsDialog(doublets);
+                    var doubletsDialog = new DoubletsDialog(doublets);
                     doubletsDialog.ShowDialog();
                     SampleStorageListView.Select();
                     return;
@@ -673,100 +504,13 @@ namespace Molmed.ChiasmaDep.Dialog
             SampleStorageListView.Select();
         }
 
-        protected void ShowWarning(String message)
+        private void ShowWarning(String message)
         {
             MessageBox.Show(message,
                            Config.GetDialogTitleStandard(),
                            MessageBoxButtons.OK,
                            MessageBoxIcon.Exclamation);
         }
-
-        private void ShowTimeLeft()
-        {
-            int timeleft, mins, secs;
-            String timeString;
-            timeleft = Config.GetAutomaticLogoutTimeLimit() - MyActivityCounter;
-            mins = timeleft / 60;
-            secs = timeleft % 60;
-            timeString = "Logout in " + mins + " minutes and " + secs + " seconds";
-
-        }
-
-        private class DuoViewItem : ListViewItem
-        {
-            private LoadSampleStorageDuoDialog MyDuoDialog;
-            private IGenericContainer MyDeposit;
-            private IGenericContainer MySampleContainer;
-            private string MyContainerPath;
-
-            public enum ListIndex : int
-            {
-                SampleContainer = 0,
-                Storage = 1,
-                Status = 2
-            }
-
-            public DuoViewItem(IGenericContainer deposit, IGenericContainer container)
-                : base(container.GetIdentifier())
-            {
-                MyDeposit = deposit;
-                MySampleContainer = container;
-                MyContainerPath = "";
-                this.SubItems.Add(deposit.GetIdentifier());
-                this.Checked = true;
-            }
-
-            public DuoViewItem(ISampleStorageDuo sampleStorageDuo, LoadSampleStorageDuoDialog duoDialog)
-                : base(sampleStorageDuo.GetSampleContainerName())
-            {
-                MyDuoDialog = duoDialog;
-                MyContainerPath = "";
-                this.Checked = sampleStorageDuo.IsChecked();
-                this.Selected = true;
-                this.UseItemStyleForSubItems = false;
-                this.SubItems.Add(sampleStorageDuo.GetContainerPath());
-            }
-
-            public IGenericContainer GetSampleContainer()
-            {
-                return MySampleContainer;
-            }
-
-            public String GetContainerPath()
-            {
-                LoadContainerPath();
-                return MyContainerPath;
-            }
-
-            private void LoadContainerPath()
-            {
-                if (IsNotNull(MyDeposit) && MyContainerPath == "")
-                {
-                    GenericContainerList pathList;
-                    StringBuilder pathRow = new StringBuilder();
-                    pathList = MyDeposit.GetContainerPath();
-                    foreach (IGenericContainer singleContainer in pathList)
-                    {
-                        pathRow.Append("//");
-                        pathRow.Append(singleContainer.GetIdentifier());
-                    }
-                    pathRow.Append("//");
-                    pathRow.Append(MyDeposit.GetIdentifier());
-                    MyContainerPath = pathRow.ToString();
-                }
-            }
-
-            public IGenericContainer GetStorageContainer()
-            {
-                return MyDeposit;
-            }
-
-            public void Update()
-            {
-                this.SubItems[(int)ListIndex.SampleContainer].Text = MySampleContainer.GetIdentifier();
-                this.SubItems[(int)ListIndex.Storage].Text = MyDeposit.GetIdentifier();
-            }
-       }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -777,7 +521,6 @@ namespace Molmed.ChiasmaDep.Dialog
         {
             StreamWriter sw = null;
             StringBuilder header = new StringBuilder();
-            string textLine;
 
             try
             {
@@ -789,8 +532,8 @@ namespace Molmed.ChiasmaDep.Dialog
                 sw.WriteLine(header.ToString());
                 foreach (DuoViewItem viewItem in SampleStorageListView.Items)
                 {
-                    textLine = viewItem.GetSampleContainer().GetIdentifier() + ", " +
-                        viewItem.GetStorageContainer().GetIdentifier();
+                    var textLine = viewItem.GetSampleContainer().GetIdentifier() + ", " +
+                                      viewItem.GetStorageContainer().GetIdentifier();
                     sw.WriteLine(textLine);
                 }
             }
@@ -800,27 +543,25 @@ namespace Molmed.ChiasmaDep.Dialog
             }
             finally
             {
-                sw.Close();
+                if (sw != null) sw.Close();
             }
         }
 
         private void exportToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            String filePath;
             MySaveFileDialog.ShowDialog();
             if (MySaveFileDialog.FileName == "")
             {
                 return;
             }
-            filePath = MySaveFileDialog.FileName;
+            var filePath = MySaveFileDialog.FileName;
             ExportToFile(filePath);
         }
 
         private void printToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            PrintDocument printDoc;
-            printDoc = new PrintDocument();
-            printDoc.PrintPage += new PrintPageEventHandler(printDoc_PrintPage);
+            var printDoc = new PrintDocument();
+            printDoc.PrintPage += printDoc_PrintPage;
             if (MyPrintDialog.ShowDialog() == DialogResult.OK)
             {
                 printDoc.Print();
@@ -832,15 +573,14 @@ namespace Molmed.ChiasmaDep.Dialog
             StringBuilder printText = new StringBuilder();
             StringBuilder header = new StringBuilder();
             Font myfont = new Font("new times roman", 12, FontStyle.Regular);
-            string textLine;
             header.Append("Move list for ");
             header.Append(UserManager.GetCurrentUser().GetName() + ", ");
             header.Append(DateTime.Today.ToString("D"));
             printText.Append(header + "\n");
             foreach (DuoViewItem viewItem in SampleStorageListView.Items)
             {
-                textLine = viewItem.GetSampleContainer() + ", " +
-                    viewItem.GetContainerPath() + "\n";
+                var textLine = viewItem.GetSampleContainer() + ", " +
+                                  viewItem.GetContainerPath() + "\n";
                 printText.Append(textLine);
             }
             e.Graphics.DrawString(printText.ToString(), myfont, Brushes.Black, 10, 10);
@@ -848,16 +588,21 @@ namespace Molmed.ChiasmaDep.Dialog
 
         private void printBarcodeForUncontainedToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            PrintBarCodeDialog printBarCodeDialog;
             try
             {
-                printBarCodeDialog = new PrintBarCodeDialog();
+                var printBarCodeDialog = new PrintBarCodeDialog();
                 printBarCodeDialog.ShowDialog();
             }
             catch (Exception ex)
             {
                 HandleError("Could not print barcode!", ex);
             }
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AboutDialog aboutDialog = new AboutDialog();
+            aboutDialog.ShowDialog();
         }
     }
 }
