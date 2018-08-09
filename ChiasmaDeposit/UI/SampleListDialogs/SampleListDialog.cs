@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Threading;
+using System.Timers;
 using System.Windows.Forms;
 using ChiasmaDeposit.UI.LoadSampleStorageDialogs;
 using Molmed.ChiasmaDep;
 using Molmed.ChiasmaDep.Data;
 using Molmed.ChiasmaDep.Data.Exception;
+using Timer = System.Timers.Timer;
 
 namespace ChiasmaDeposit.UI.SampleListDialogs
 {
@@ -11,12 +14,14 @@ namespace ChiasmaDeposit.UI.SampleListDialogs
     {
         private IGenericContainer _putInContainer;
         private readonly BarCodeController _barCodeController;
+        private Timer _resetTimer = new Timer(200);
 
         public SampleListDialog()
         {
             InitializeComponent();
             _putInContainer = null;
             _barCodeController = null;
+            _resetTimer.Elapsed += ResetTimer_Elapsed;
             InitListView();
         }
 
@@ -24,6 +29,7 @@ namespace ChiasmaDeposit.UI.SampleListDialogs
         {
             InitializeComponent();
             InitListView();
+            _resetTimer.Elapsed += ResetTimer_Elapsed;
             _barCodeController = new BarCodeController(this);
             _barCodeController.BarCodeReceived += BarCodeReceived;
             if (LoadSampleStorageDuoDialog.IsSampleContainer(container))
@@ -38,6 +44,12 @@ namespace ChiasmaDeposit.UI.SampleListDialogs
             {
                 throw new DataException("This container neither represent a sample container nor a deposit");            
             }
+        }
+
+        private void ResetTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            _resetTimer.Enabled = false;
+            _barCodeController.Reset();
         }
 
         private void AddListviewItem(ContainerToBePlacedViewItem item)
@@ -58,6 +70,11 @@ namespace ChiasmaDeposit.UI.SampleListDialogs
         private void HandleReceivedBarCode(String barCode)
         {
             var container = GenericContainerManager.GetGenericContainerByBarCode(barCode);
+            if (container == null)
+            {
+                _resetTimer.Enabled = true;
+                return;
+            }
             if (LoadSampleStorageDuoDialog.IsSampleContainer(container))
             {
                 AddListviewItem(new ContainerToBePlacedViewItem(container));
